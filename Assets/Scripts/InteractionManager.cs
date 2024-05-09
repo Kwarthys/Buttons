@@ -19,17 +19,12 @@ public class InteractionManager : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.down, 10, interactionLayers);
             if(hit.collider != null)
             {
-                Debug.Log(hit.collider.name);
                 Interactor interactor = hit.transform.gameObject.GetComponentInParent<Interactor>();
                 if(interactor != null)
                 {
                     currentInteractor = interactor;
                     interactor.onInteractionStart(mousePos);
                 }
-            }
-            else
-            {
-                Debug.Log("Missed");
             }
         }
         else if(currentInteractor != null)

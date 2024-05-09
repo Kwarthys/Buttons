@@ -132,6 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 369460638}
+  - component: {fileID: 369460639}
   m_Layer: 0
   m_Name: InstrumentButton
   m_TagString: Untagged
@@ -155,8 +156,27 @@ Transform:
   - {fileID: 1226426850}
   - {fileID: 454961526}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &369460639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369460637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84a40dbb46a5d284aa5004cd9ade2a8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  instrumentName: BUTTON
+  title: {fileID: 1801676684}
+  interactors:
+  - {fileID: 1226426853}
+  valueMin: 0
+  valueMax: 0
+  value: 0
 --- !u!1 &454961525
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,7 +556,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &761127646
 GameObject:
@@ -1072,6 +1092,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 0
   sensitivity: 0.1
+  momentary: 1
+  pressedScale: 0.9
 --- !u!1 &1416820072
 GameObject:
   m_ObjectHideFlags: 0

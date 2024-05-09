@@ -11,10 +11,12 @@ public class Interactor : MonoBehaviour
     [SerializeField]
     protected float sensitivity = 0.1f;
 
+    public BaseInstrument owner;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        init();
     }
 
     // Update is called once per frame
@@ -23,6 +25,7 @@ public class Interactor : MonoBehaviour
         
     }
 
+    virtual protected void init() { }
     virtual public void onInteractionStart(Vector2 mousePosition) {}
     virtual public void onInteractionEnd() {}
     virtual public void onInteractionUpdate(Vector2 mousePosition) {}
