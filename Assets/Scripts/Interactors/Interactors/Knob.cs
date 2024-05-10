@@ -9,11 +9,23 @@ public class Knob : Interactor
 
     override public void onInteractionUpdate(Vector2 mousePosition)
     {
-        value = Mathf.Clamp(value + (mousePosition.x - lastMousePos.x) * sensitivity, 0f, 100f);
+        value = Mathf.Clamp(value + (mousePosition.x - lastMousePos.x) * sensitivity, 0f, 1f);
         lastMousePos = mousePosition;
 
+        owner.notifyValueChanged(this);
+        updateAnimation();
+    }
+
+    public override void onInteractionEnd()
+    {
+        value = owner.getClosestValidValue(value);
+        updateAnimation();
+    }
+
+    private void updateAnimation()
+    {
         Vector3 rot = transform.localRotation.eulerAngles;
-        rot.z = value * -1.8f;
+        rot.z = value * -180f;
         transform.localRotation = Quaternion.Euler(rot);
     }
 }

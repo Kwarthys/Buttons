@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84a40dbb46a5d284aa5004cd9ade2a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instrumentName: BUTTON
+  instrumentName: Button
   title: {fileID: 1801676684}
   interactors:
   - {fileID: 1226426853}
@@ -567,6 +567,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 761127647}
+  - component: {fileID: 761127648}
   m_Layer: 0
   m_Name: InstrumentKnob
   m_TagString: Untagged
@@ -590,8 +591,27 @@ Transform:
   - {fileID: 1063013700}
   - {fileID: 1789765439}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &761127648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 761127646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fc82a5b895584047996ad90b6532145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  instrumentName: Knob
+  title: {fileID: 2111112038}
+  interactors:
+  - {fileID: 1063013703}
+  valueMin: 0
+  valueMax: 180
+  value: 0
 --- !u!1 &824981966
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,6 +713,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 0
   sensitivity: 10
+  owner: {fileID: 0}
   range: 2.5
   orientation: 0
 --- !u!224 &824981971
@@ -915,7 +936,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
-  sensitivity: 10
+  sensitivity: 0.5
+  owner: {fileID: 0}
 --- !u!1 &1103046562
 GameObject:
   m_ObjectHideFlags: 0
@@ -1092,8 +1114,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 0
   sensitivity: 0.1
+  owner: {fileID: 0}
   momentary: 1
   pressedScale: 0.9
+  colors:
+    serializedVersion: 2
+    key0: {r: 0.6415094, g: 0, b: 0, a: 1}
+    key1: {r: 1, g: 0, b: 0, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
 --- !u!1 &1416820072
 GameObject:
   m_ObjectHideFlags: 0
@@ -1559,6 +1611,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2059849656}
+  - component: {fileID: 2059849657}
   m_Layer: 0
   m_Name: InstrumentSlider
   m_TagString: Untagged
@@ -1583,8 +1636,27 @@ Transform:
   - {fileID: 962378803}
   - {fileID: 1801172295}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2059849657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059849655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fc82a5b895584047996ad90b6532145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  instrumentName: Slider
+  title: {fileID: 2103178029}
+  interactors:
+  - {fileID: 824981970}
+  valueMin: 1
+  valueMax: 4
+  value: 0
 --- !u!1 &2103178027
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,8 +16,14 @@ public class Slider : Interactor
         float axisValue = isVertical() ? mousePosition.y - transform.parent.position.y : mousePosition.x - transform.parent.position.x;
 
         value = Mathf.Clamp(Mathf.InverseLerp(-range * 0.5f, range * 0.5f, axisValue), -1f, 1f);
-        value *= 100f;
 
+        owner.notifyValueChanged(this);
+        transform.localPosition = getValueFromPos();
+    }
+
+    public override void onInteractionEnd()
+    {
+        value = owner.getClosestValidValue(value);
         transform.localPosition = getValueFromPos();
     }
 
@@ -35,9 +41,9 @@ public class Slider : Interactor
     private Vector3 getValueFromPos()
     {
         if(isVertical())
-            return new Vector3(0f, value * range * 0.01f - range * 0.5f, 0f);
+            return new Vector3(0f, value * range - range * 0.5f, 0f);
         else
-            return new Vector3(value * range * 0.01f - range * 0.5f, 0f, 0f);
+            return new Vector3(value * range - range * 0.5f, 0f, 0f);
     }
 
     private bool isVertical() { return orientation == Orientation.Vertical; }

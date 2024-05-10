@@ -10,19 +10,13 @@ public class Interactor : MonoBehaviour
 
     [SerializeField]
     protected float sensitivity = 0.1f;
-
+    [HideInInspector]
     public BaseInstrument owner;
 
     // Start is called before the first frame update
     void Start()
     {
         init();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     virtual protected void init() { }

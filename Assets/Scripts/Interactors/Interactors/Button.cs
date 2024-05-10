@@ -11,14 +11,18 @@ public class Button : Interactor
     [SerializeField]
     private float pressedScale = 0.9f;
 
+    [SerializeField]
+    private Gradient colors;
+    private SpriteRenderer buttonRenderer;
+
     override public void onInteractionStart(Vector2 mousePosition)
     {
         if(momentary)
-            value = 100f;
+            value = 1f;
         else
             toggle();
 
-        updateScale();
+        updateAnimation();
         owner.notifyValueChanged(this);
     }
     override public void onInteractionEnd()
@@ -27,16 +31,32 @@ public class Button : Interactor
             return;
 
         value = 0f;
-        updateScale();
+        updateAnimation();
         owner.notifyValueChanged(this);
+    }
+
+    private void updateAnimation()
+    {
+        updateScale();
+        updateColor();
+    }
+
+    private void updateColor()
+    {
+        buttonRenderer.color = colors.Evaluate(value);
     }
 
     private void updateScale()
     {
-        transform.localScale = savedScale * (1.0f - ( 1.0f - pressedScale) * value * 0.01f);
+        transform.localScale = savedScale * (1.0f - ( 1.0f - pressedScale) * value);
     }
 
-    override protected void init() { savedScale = transform.localScale; }
+    override protected void init()
+    {
+        savedScale = transform.localScale;
+        buttonRenderer = GetComponent<SpriteRenderer>();
+        updateColor();
+    }
 
-    private void toggle() { value = 100f - value; }
+    private void toggle() { value = 1f - value; }
 }

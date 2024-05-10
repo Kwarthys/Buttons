@@ -12,13 +12,10 @@ public abstract class BaseInstrument : MonoBehaviour
     [SerializeField]
     protected Interactor[] interactors = null;
 
-    public void setName(string newName)
-    {
-        instrumentName = newName;
-        title.text = newName;
-    }
-
+    public string getName() { return instrumentName; }
+    public void setDisplay(string display) { title.text = display; }
     abstract public void notifyValueChanged(Interactor interactor);
+    virtual public float getClosestValidValue(float value) { return value; }
 
     virtual protected void init() { }
 
@@ -34,7 +31,6 @@ public abstract class BaseInstrument : MonoBehaviour
 
 public abstract class Instrument<T> : BaseInstrument
 {
-
     [SerializeField]
     protected T valueMin;
     [SerializeField]
@@ -43,6 +39,4 @@ public abstract class Instrument<T> : BaseInstrument
     protected T value;
 
     public T getValue() { return value; }
-
-    abstract protected T convertValueFromInteractor(float interactorValue);
 }
