@@ -24,15 +24,18 @@ public class Button : Interactor
 
         updateAnimation();
         owner.notifyValueChanged(this);
+        owner.notifyInteractionEnded(this);
     }
     override public void onInteractionEnd()
     {
-        if(!momentary)
-            return;
+        if(momentary)
+        {
+            value = 0f;
+            updateAnimation();
+            owner.notifyValueChanged(this);
+        }
 
-        value = 0f;
-        updateAnimation();
-        owner.notifyValueChanged(this);
+        owner.notifyInteractionEnded(this);
     }
 
     private void updateAnimation()

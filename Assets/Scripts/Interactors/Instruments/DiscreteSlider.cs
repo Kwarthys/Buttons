@@ -14,4 +14,18 @@ public class DiscreteSlider : Instrument<int>
     {
         return Mathf.InverseLerp(valueMin, valueMax, value);
     }
+    override public string generateNewTask()
+    {
+        task = new Task<int>();
+
+        int targetValue = value;
+        while(targetValue == value)
+        {
+            targetValue = Mathf.RoundToInt(Random.value * (valueMax - valueMin)) + valueMin;
+        }
+        task.targetValue = targetValue;
+        string prompt = "Set " + instrumentName + " to " + task.targetValue;
+        task.prompt = prompt;
+        return prompt;
+    }
 }

@@ -15,6 +15,9 @@ public abstract class BaseInstrument : MonoBehaviour
     public string getName() { return instrumentName; }
     public void setDisplay(string display) { title.text = display; }
     abstract public void notifyValueChanged(Interactor interactor);
+    abstract public void notifyInteractionEnded(Interactor interactor);
+    abstract public string getPrompt();
+    abstract public string generateNewTask();
     virtual public float getClosestValidValue(float value) { return value; }
 
     virtual protected void init() { }
@@ -38,5 +41,30 @@ public abstract class Instrument<T> : BaseInstrument
     [SerializeField]
     protected T value;
 
+    protected Task<T> task;
+
     public T getValue() { return value; }
+    override public string getPrompt()
+    {
+        if(task == null)
+            return "";
+        return task.prompt;
+    }
+
+    protected virtual void checkTask()
+    {
+        if(task == null)
+            return;
+
+        if(EqualityComparer<T>.Default.Equals(value, task.targetValue))
+        {
+            TaskManager.instance.notifyTaskComplete(this);
+            task = null;
+        }
+    }
+
+    override public void notifyInteractionEnded(Interactor interactor)
+    {
+        checkTask();
+    }
 }

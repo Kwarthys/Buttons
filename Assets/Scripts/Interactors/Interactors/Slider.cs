@@ -25,6 +25,7 @@ public class Slider : Interactor
     {
         value = owner.getClosestValidValue(value);
         transform.localPosition = getValueFromPos();
+        owner.notifyInteractionEnded(this);
     }
 
     private void OnDrawGizmosSelected()
