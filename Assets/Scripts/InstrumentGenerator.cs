@@ -18,70 +18,137 @@ public class InstrumentGenerator : MonoBehaviour
     public struct InstrumentNameData
     {
         public int coreID;
+        public int techID;
+        public int compID;
+        public int suffixID;
         public string name;
+
+        public static InstrumentNameData empty()
+        {
+            InstrumentNameData data;
+            data.coreID = -1; data.techID = -1; data.compID = -1; data.suffixID = -1; data.name = "";
+            return data;
+        }
     }
 
-    private void Awake()
+    private void loadNames()
     {
         TextAsset jsonTextFile = Resources.Load<TextAsset>("names");
         data = JsonUtility.FromJson<NamesData>(jsonTextFile.text);
+        Resources.UnloadAsset(jsonTextFile);
+    }
 
-        List<int> takenCores = new List<int>();
+    public List<string> generateInstruments(int numberOfInstruments, int difficulty)
+    {
+        List<InstrumentNameData> takenNames = new List<InstrumentNameData>();
+        List<string> names = new List<string>();
 
-        for(int i = 0; i < 7; ++i)
+        for(int i = 0; i < numberOfInstruments; ++i)
         {
-            InstrumentNameData instrument = generateInstrumentName(takenCores);
+            InstrumentNameData instrument = generateInstrumentName(takenNames, difficulty);
 
             if(instrument.coreID != -1)
             {
-                takenCores.Add(instrument.coreID);
-                Debug.Log(instrument.name);
+                //Successful creation
+                takenNames.Add(instrument);
+                names.Add(instrument.name);
             }
         }
+
+        return names;
     }
 
-    public InstrumentNameData generateInstrumentName(List<int> bannedIDs)
+    private InstrumentNameData generateInstrumentName(List<InstrumentNameData> bannedIDs, int difficulty)
     {
-        InstrumentNameData instruent = new InstrumentNameData();
-        instruent.coreID = -1;
-
         if(data == null)
         {
-            Debug.LogError("Trying to generate an instrument with names data not loaded");
-            return instruent;
+            loadNames();
         }
 
-        string name = "";
-        int coresSize = data.Cores.Length;
-        int coreID = (int)(Random.value * coresSize);
+        bool valid = false;
+        int tries = 0;
+        InstrumentNameData instrument = InstrumentNameData.empty();
 
-        if(bannedIDs.Contains(coreID))
+        while(!valid && tries < 1000)
         {
-            for(int i = coreID; i < coresSize && bannedIDs.Contains(coreID); ++i)
-                coreID = (coreID + i) % coresSize;
+            tries++;
+            instrument = InstrumentNameData.empty();
 
-            if(bannedIDs.Contains(coreID))
+            instrument.coreID = (int)(Random.value * data.Cores.Length);
+            if(Random.value < techChance)
+                instrument.techID = (int)(Random.value * data.Technologies.Length);
+            if(Random.value < compChance)
+                instrument.compID = (int)(Random.value * data.Complements.Length);
+            if(Random.value < suffixChance)
+                instrument.suffixID = (int)(Random.value * data.Suffixes.Length);
+
+            valid = isAllowed(instrument, bannedIDs, difficulty);
+        }
+
+        if(!valid) //all attempts failed
+        {
+            Debug.LogWarning("Name Creation failed");
+            return InstrumentNameData.empty();
+        }
+
+        //ID Combination is valid -> build name and return instrumentNameData [COMPLEMENT TECHNOLOGY CORE SUFFIX] (only core is mandatory)
+        string name = data.Cores[instrument.coreID];
+        if(instrument.techID != -1)
+            name = data.Technologies[instrument.techID] + " " + name;
+        if(instrument.compID != -1)
+            name = data.Complements[instrument.compID] + " " + name;
+        if(instrument.suffixID != -1)
+            name = name + " " + data.Suffixes[instrument.suffixID];
+
+        instrument.name = name;
+
+        return instrument;
+    }
+
+    private bool isAllowed(InstrumentNameData candidate, List<InstrumentNameData> bannedIDs, int difficulty)
+    {
+        int core = 0, tech = 1, comp = 2, suffix = 3;
+
+        foreach(InstrumentNameData banned in bannedIDs)
+        {
+            bool[] matches = { false, false, false, false };
+
+            if(candidate.coreID == banned.coreID)
+                matches[core] = true;
+            if(candidate.techID == banned.techID)
+                matches[tech] = true;
+            if(candidate.compID == banned.compID)
+                matches[comp] = true;
+            if(candidate.suffixID == banned.suffixID)
+                matches[suffix] = true;
+
+            //evaluate
+            switch(difficulty)
             {
-                Debug.LogError("Could not create instrument, all cores taken");
-                return instruent;
+                case (0): //easy
+                {
+                    if(matches[core] == true)
+                        return false;
+                }break;
+                case (1): //normal
+                {
+                    if(matches[core] == true && matches[tech] == true)
+                        return false;
+                }break;
+                case (2): //hard
+                {
+                    if(matches[core] == true && matches[tech] == true && matches[comp] == true)
+                        return false;
+                }break;
+                case (3): //very hard
+                {
+                    if(matches[core] == true && matches[tech] == true && matches[comp] == true && matches[suffix] == true)
+                        return false;
+                }break;
             }
         }
 
-        name += data.Cores[coreID];
-
-        if(Random.value < techChance)
-            name = data.Technologies[(int)(Random.value * data.Technologies.Length)] + " " + name;
-
-        if(Random.value < compChance)
-            name = data.Complements[(int)(Random.value * data.Complements.Length)] + " " + name;
-
-        if(Random.value < suffixChance)
-            name = name + " " + data.Suffixes[(int)(Random.value * data.Suffixes.Length)];
-
-        instruent.coreID = coreID;
-        instruent.name = name;
-
-        return instruent;
+        return true;
     }
 }
 

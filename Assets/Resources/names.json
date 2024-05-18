@@ -5,7 +5,11 @@
         "Turret",
         "Shield",
         "Tank",
-        "Pump"
+        "Thruster",
+        "Generator",
+        "Controller",
+        "Hatch"
+
     ],
     "Technologies":
     [
@@ -33,6 +37,7 @@
     [
         "Shielding",
         "Vent",
-        "Wiring"
+        "Wiring",
+        "Pump"
     ]
 }

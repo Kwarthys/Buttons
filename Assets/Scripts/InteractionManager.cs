@@ -14,10 +14,8 @@ public class InteractionManager : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            //raycast
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.down, 10, interactionLayers);
-            if(hit.collider != null)
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if(Physics.Raycast(mousePos, Vector3.forward, out RaycastHit hit , 50f, interactionLayers))
             {
                 Interactor interactor = hit.transform.gameObject.GetComponentInParent<Interactor>();
                 if(interactor != null)
