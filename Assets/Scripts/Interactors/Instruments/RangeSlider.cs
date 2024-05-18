@@ -38,7 +38,7 @@ public class RangeSlider : Instrument<int>
         float halfRange = valueRange * 0.5f;
         if(isValueInRange(task.targetValue))
         {
-            TaskManager.instance.notifyTaskComplete(this);
+            notifyTaskComplete();
             task = null;
         }
     }

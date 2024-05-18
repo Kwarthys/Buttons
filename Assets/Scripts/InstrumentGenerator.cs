@@ -15,6 +15,8 @@ public class InstrumentGenerator : MonoBehaviour
     [SerializeField]
     private float suffixChance = 0.2f;
 
+    private List<InstrumentNameData> takenNames = new List<InstrumentNameData>();
+
     public struct InstrumentNameData
     {
         public int coreID;
@@ -40,7 +42,6 @@ public class InstrumentGenerator : MonoBehaviour
 
     public List<string> generateInstruments(int numberOfInstruments, int difficulty)
     {
-        List<InstrumentNameData> takenNames = new List<InstrumentNameData>();
         List<string> names = new List<string>();
 
         for(int i = 0; i < numberOfInstruments; ++i)

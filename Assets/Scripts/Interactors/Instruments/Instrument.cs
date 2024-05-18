@@ -12,6 +12,7 @@ public abstract class BaseInstrument : MonoBehaviour
     [SerializeField]
     protected Interactor[] interactors = null;
 
+    public void setName(string n) { instrumentName = n; }//temporary, should only be doable at construction
     public string getName() { return instrumentName; }
     public void setDisplay(string display) { title.text = display; }
     abstract public void notifyValueChanged(Interactor interactor);
@@ -19,6 +20,8 @@ public abstract class BaseInstrument : MonoBehaviour
     abstract public string getPrompt();
     abstract public string generateNewTask();
     virtual public float getClosestValidValue(float value) { return value; }
+
+    protected void notifyTaskComplete() { ClientManager.instance.notifyTaskComplete(this); }
 
     virtual protected void init() { }
 
@@ -58,7 +61,7 @@ public abstract class Instrument<T> : BaseInstrument
 
         if(EqualityComparer<T>.Default.Equals(value, task.targetValue))
         {
-            TaskManager.instance.notifyTaskComplete(this);
+            notifyTaskComplete();
             task = null;
         }
     }
