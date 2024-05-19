@@ -12,7 +12,7 @@ public abstract class BaseInstrument : MonoBehaviour
     [SerializeField]
     protected Interactor[] interactors = null;
 
-    public void setName(string n) { instrumentName = n; }//temporary, should only be doable at construction
+    public void setName(string n) { instrumentName = n; setDisplay(n); }//temporary, should only be doable at construction
     public string getName() { return instrumentName; }
     public void setDisplay(string display) { title.text = display; }
     abstract public void notifyValueChanged(Interactor interactor);

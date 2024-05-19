@@ -15,6 +15,8 @@ public class TaskManager : MonoBehaviour
     [SerializeField]
     private List<int> activeInstruments = new List<int>();
     [SerializeField]
+    private List<int> pendingInstruments = new List<int>();
+    [SerializeField]
     private InstrumentGenerator nameGenerator;
 
     private Dictionary<NetworkConnectionToClient, int[]> instrumentsByClient = new Dictionary<NetworkConnectionToClient, int[]>();
@@ -27,7 +29,7 @@ public class TaskManager : MonoBehaviour
     private void Update()
     {
         //Check number of activeTasks
-        if(activeInstruments.Count >= maxActiveTask * instrumentsByClient.Keys.Count)
+        if(activeInstruments.Count + pendingInstruments.Count >= maxActiveTask * instrumentsByClient.Keys.Count)
             return;
 
         //make an instrument generate a task:
@@ -41,7 +43,7 @@ public class TaskManager : MonoBehaviour
         {
             int index = (int)(Random.value * instrumentsByClient[player].Length);
             chosenInstrument = instrumentsByClient[player][index];
-            if(activeInstruments.Contains(chosenInstrument))
+            if(activeInstruments.Contains(chosenInstrument) || pendingInstruments.Contains(chosenInstrument))
             {
                 player = players[(int)(Random.value * instrumentsByClient.Keys.Count)];
                 chosenInstrument = -1;
@@ -49,6 +51,7 @@ public class TaskManager : MonoBehaviour
         }
 
         //make it generate a task through network
+        pendingInstruments.Add(chosenInstrument);
         Communicator.instance.TargetAskCreateTask(player, chosenInstrument);
         //will retrieve and display the prompt later on a random client in 'onPromptCreated'
     }
@@ -69,8 +72,17 @@ public class TaskManager : MonoBehaviour
 
     public void onPromptCreated(int UID, string prompt)
     {
-        LogDisplayManager.instance.log(UID + " created prompt " + prompt);
-        //then send prompt to random player
+        if(pendingInstruments.Contains(UID))
+        {
+            pendingInstruments.Remove(UID);
+            activeInstruments.Add(UID);
+            LogDisplayManager.instance.log(UID + " created prompt " + prompt);
+            //then send prompt to random player
+
+            NetworkConnectionToClient player = getRandomPlayer();
+            Communicator.instance.TargetDisplayPrompt(player, prompt, getNextUID()); // TODO : actually use UID (but first is it needed?)
+        }
+
     }
 
     public void onClientConnects(NetworkConnectionToClient client)
@@ -84,8 +96,6 @@ public class TaskManager : MonoBehaviour
         Debug.Log("onClientConnects " + client);
         LogDisplayManager.instance.log("onClientConnects " + client);
         Communicator.instance.TargetAskInstrumentCreation(client, names.ToArray(), clientUIDs);
-
-        Communicator.instance.sayHello();
     }
 
     public void onClientDisconnects(NetworkConnectionToClient client)
@@ -93,6 +103,12 @@ public class TaskManager : MonoBehaviour
         //TODO : unplug existing active tasks
 
         instrumentsByClient.Remove(client);
+    }
+
+    private NetworkConnectionToClient getRandomPlayer()
+    {
+        List<NetworkConnectionToClient> players = Enumerable.ToList(instrumentsByClient.Keys);
+        return players[(int)(Random.value * instrumentsByClient.Keys.Count)];
     }
 }
 

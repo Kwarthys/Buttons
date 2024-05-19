@@ -9,37 +9,43 @@ public class ClientManager : MonoBehaviour
 
     public BaseInstrument buttonInstrument;
     public BaseInstrument knobInstrument;
-    public BaseInstrument sliderInstrument; //temporary fixed instruments
+    public BaseInstrument sliderInstrument; //temporary fixed instruments -> Type will be generated
 
-    public Dictionary<int, BaseInstrument> instruments = new Dictionary<int, BaseInstrument>();
+    [SerializeField]
+    private TMPro.TextMeshPro promptDisplay;
+
+    public Dictionary<int, BaseInstrument> instrumentsByUID = new Dictionary<int, BaseInstrument>();
 
     public void instantiateInstruments(string[] instrumentNames, int[] UIDS)
     {
         //should create instrument, for now it just initializes existing ones
         if(instrumentNames.Length < 3 || UIDS.Length < 3)
+        {
+            LogDisplayManager.instance.log("Not enough names(" + instrumentNames.Length + ") or ids(" + UIDS.Length + ")");
             return;
+        }
 
         buttonInstrument.setName(instrumentNames[0]);
         knobInstrument.setName(instrumentNames[1]);
         sliderInstrument.setName(instrumentNames[2]);
 
-        instruments.Add(UIDS[0], buttonInstrument);
-        instruments.Add(UIDS[1], knobInstrument);
-        instruments.Add(UIDS[2], sliderInstrument);
+        instrumentsByUID.Add(UIDS[0], buttonInstrument);
+        instrumentsByUID.Add(UIDS[1], knobInstrument);
+        instrumentsByUID.Add(UIDS[2], sliderInstrument);
     }
 
     public bool askCreateTaskForInstrument(int UID, out string prompt)
     {
         prompt = "";
 
-        if(!instruments.ContainsKey(UID))
+        if(!instrumentsByUID.ContainsKey(UID))
         {
             LogDisplayManager.instance.log("tried to acces non existing instrument " + UID.ToString());
             return false;
         }
 
         //send prompt back to manager
-        prompt = instruments[UID].generateNewTask();
+        prompt = instrumentsByUID[UID].generateNewTask();
         return true;
     }
 
@@ -58,9 +64,9 @@ public class ClientManager : MonoBehaviour
 
     private int findUIDOfInstrument(BaseInstrument i)
     {
-        foreach(int UID in instruments.Keys)
+        foreach(int UID in instrumentsByUID.Keys)
         {
-            if(instruments[UID] == i)
+            if(instrumentsByUID[UID] == i)
                 return UID;
         }
 
