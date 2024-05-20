@@ -566,7 +566,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxActiveTask: 2
-  activeInstruments: 
   pendingInstruments: 
   nameGenerator: {fileID: 655083820}
 --- !u!114 &655083818
@@ -715,8 +714,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetX: 0
-  offsetY: 0
+  offsetX: 581
+  offsetY: 300
 --- !u!4 &734843853
 Transform:
   m_ObjectHideFlags: 0
@@ -1657,6 +1656,7 @@ GameObject:
   - component: {fileID: 1526564265}
   - component: {fileID: 1526564264}
   - component: {fileID: 1526564263}
+  - component: {fileID: 1526564266}
   m_Layer: 0
   m_Name: TasksDisplayer
   m_TagString: Untagged
@@ -1821,6 +1821,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 1.98}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1526564266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526564262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9bf627776ddcdc4690aed4cdf5d026c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  promptDisplay: {fileID: 1526564263}
 --- !u!1 &1681377295
 GameObject:
   m_ObjectHideFlags: 0
@@ -2241,7 +2254,7 @@ MonoBehaviour:
   buttonInstrument: {fileID: 369460639}
   knobInstrument: {fileID: 761127648}
   sliderInstrument: {fileID: 2059849657}
-  promptDisplay: {fileID: 1526564263}
+  promptManager: {fileID: 1526564266}
 --- !u!1 &2059849655
 GameObject:
   m_ObjectHideFlags: 0

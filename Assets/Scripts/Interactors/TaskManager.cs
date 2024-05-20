@@ -13,15 +13,13 @@ public class TaskManager : MonoBehaviour
     [SerializeField]
     private int maxActiveTask = 1;
     [SerializeField]
-    private List<int> activeInstruments = new List<int>();
-    [SerializeField]
-    private List<int> pendingInstruments = new List<int>();
+    private List<int> pendingInstruments = new();
     [SerializeField]
     private InstrumentGenerator nameGenerator;
 
-    private Dictionary<NetworkConnectionToClient, int[]> instrumentsByClient = new Dictionary<NetworkConnectionToClient, int[]>();
+    private Dictionary<NetworkConnectionToClient, int[]> instrumentsByClient = new();
 
-    private Dictionary<int, string> promptsByUID = new Dictionary<int, string>();
+    private Dictionary<int, NetworkConnectionToClient> promptedPlayerByActiveInstruments = new();
 
     private int UIDCounter = 1;
     private int getNextUID() { return UIDCounter++; }
@@ -29,7 +27,7 @@ public class TaskManager : MonoBehaviour
     private void Update()
     {
         //Check number of activeTasks
-        if(activeInstruments.Count + pendingInstruments.Count >= maxActiveTask * instrumentsByClient.Keys.Count)
+        if(promptedPlayerByActiveInstruments.Count + pendingInstruments.Count >= maxActiveTask * instrumentsByClient.Keys.Count)
             return;
 
         //make an instrument generate a task:
@@ -43,7 +41,7 @@ public class TaskManager : MonoBehaviour
         {
             int index = (int)(Random.value * instrumentsByClient[player].Length);
             chosenInstrument = instrumentsByClient[player][index];
-            if(activeInstruments.Contains(chosenInstrument) || pendingInstruments.Contains(chosenInstrument))
+            if(promptedPlayerByActiveInstruments.ContainsKey(chosenInstrument) || pendingInstruments.Contains(chosenInstrument))
             {
                 player = players[(int)(Random.value * instrumentsByClient.Keys.Count)];
                 chosenInstrument = -1;
@@ -59,10 +57,10 @@ public class TaskManager : MonoBehaviour
     public void notifyTaskComplete(int UID)
     {
         //happy
-        if(activeInstruments.Contains(UID))
+        if(promptedPlayerByActiveInstruments.ContainsKey(UID))
         {
-            LogDisplayManager.instance.log("GGs");
-            activeInstruments.Remove(UID);
+            Communicator.instance.TargetRemovePrompt(promptedPlayerByActiveInstruments[UID], UID);
+            promptedPlayerByActiveInstruments.Remove(UID);
         }
         else
         {
@@ -75,12 +73,13 @@ public class TaskManager : MonoBehaviour
         if(pendingInstruments.Contains(UID))
         {
             pendingInstruments.Remove(UID);
-            activeInstruments.Add(UID);
-            LogDisplayManager.instance.log(UID + " created prompt " + prompt);
-            //then send prompt to random player
 
+            //chose random player
             NetworkConnectionToClient player = getRandomPlayer();
-            Communicator.instance.TargetDisplayPrompt(player, prompt, getNextUID()); // TODO : actually use UID (but first is it needed?)
+            promptedPlayerByActiveInstruments.Add(UID, player);
+
+            //then send prompt to random player
+            Communicator.instance.TargetDisplayPrompt(player, prompt, UID);
         }
 
     }

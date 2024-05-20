@@ -12,9 +12,19 @@ public class ClientManager : MonoBehaviour
     public BaseInstrument sliderInstrument; //temporary fixed instruments -> Type will be generated
 
     [SerializeField]
-    private TMPro.TextMeshPro promptDisplay;
+    private PromptDisplayManager promptManager;
 
     public Dictionary<int, BaseInstrument> instrumentsByUID = new Dictionary<int, BaseInstrument>();
+
+    public void displayPrompt(int ID, string prompt)
+    {
+        promptManager.addPrompt(ID, prompt);
+    }
+
+    public void removePrompt(int ID)
+    {
+        promptManager.removePrompt(ID);
+    }
 
     public void instantiateInstruments(string[] instrumentNames, int[] UIDS)
     {

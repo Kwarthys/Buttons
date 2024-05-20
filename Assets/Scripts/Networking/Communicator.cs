@@ -48,6 +48,14 @@ public class Communicator : MonoBehaviour
         target.Send(message);
     }
 
+    public void TargetRemovePrompt(NetworkConnectionToClient target, int promptUID)
+    {
+        RemovePromptMessage message = new() { UID = promptUID };
+        target.Send(message);
+    }
+
+    // -------------- MESSAGES DECLARATION AND HANDLING ----------------------
+
     public struct AskCreateTaskMessage : NetworkMessage
     {
         public int IUID;
@@ -89,19 +97,28 @@ public class Communicator : MonoBehaviour
     }
     public void onInstrumentCreationMessage(AskInstrumentCreationMessage message)
     {
-        LogDisplayManager.instance.log("TargetAskInstrumentCreation");
         ClientManager.instance.instantiateInstruments(message.names, message.IUIDS);
     }
 
     public struct DisplayPromptMessage : NetworkMessage
     {
-        public int UID;//unique ID of the prompt, not of any instrument
+        public int UID;//unique ID of the prompt's instrument
         public string prompt;
     }
 
     public void onDisplayPromptMessage(DisplayPromptMessage message)
     {
-        // TODO
+        ClientManager.instance.displayPrompt(message.UID, message.prompt);
+    }
+
+    public struct RemovePromptMessage : NetworkMessage
+    {
+        public int UID;//unique ID of the prompt's instrument
+    }
+
+    public void onRemovePromptMessage(RemovePromptMessage message)
+    {
+        ClientManager.instance.removePrompt(message.UID);
     }
 
     public void setupMessageCallbacks()
@@ -109,6 +126,7 @@ public class Communicator : MonoBehaviour
         NetworkClient.RegisterHandler<AskInstrumentCreationMessage>(onInstrumentCreationMessage);
         NetworkClient.RegisterHandler<AskCreateTaskMessage>(onAskCreateTaskMessage);
         NetworkClient.RegisterHandler<DisplayPromptMessage>(onDisplayPromptMessage);
+        NetworkClient.RegisterHandler<RemovePromptMessage>(onRemovePromptMessage);
 
 
         NetworkServer.RegisterHandler<TaskPromptCreatedMessage>(onPromptCreatedMessage);
